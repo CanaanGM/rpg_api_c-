@@ -1,12 +1,17 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 public class AuthRepo : IAuthRepo
 {
     private DataContext _context;
+    private IConfiguration _config;
 
-    public AuthRepo(DataContext context)
+    public AuthRepo(DataContext context, IConfiguration config)
     {
         _context = context;
+        _config = config;
     }
     public async Task<ServiceResponse<string>> Login(string username, string password)
     {
@@ -25,7 +30,7 @@ public class AuthRepo : IAuthRepo
             return response;
         }
 
-        response.Data = user.Id.ToString();
+        response.Data = CreateToken(user);
         return response;
 
     }
@@ -75,5 +80,30 @@ public class AuthRepo : IAuthRepo
 
             return computedHash.SequenceEqual(passwordHash);
         }
+    }
+
+    private string CreateToken(User user){
+        var claims = new List<Claim>{
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.Username),
+        };
+        var appSettingsToken = _config.GetSection("AppSettings:Token").Value;
+        if (appSettingsToken is null) throw new Exception("Appsettings Token is null"); // will change if token is in secrets
+
+        SymmetricSecurityKey key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(appSettingsToken));
+
+        SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.Now.AddDays(1),
+            SigningCredentials = creds,
+        };
+
+        JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+        SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+
+        return tokenHandler.WriteToken(token);
+        
     }
 }
