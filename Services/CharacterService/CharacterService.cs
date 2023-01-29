@@ -1,10 +1,12 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 public class CharacterService : ICharacterService
 {
-    public CharacterService(IMapper mapper)
+    public CharacterService(IMapper mapper, DataContext context)
     {
         _mapper = mapper;
+        _context = context;
     }
      private static List<Character> characters =
      new List<Character>()
@@ -38,14 +40,22 @@ public class CharacterService : ICharacterService
         }
         };
     private readonly IMapper _mapper;
+    private readonly DataContext _context;
 
     public async Task<ServiceResponse<List<ReadCharacterDto>>> CreateCharacter(CreateCharacterDto newCharacter)
     {   
         var serviceResponse = new ServiceResponse<List<ReadCharacterDto>>();
         var newChara = _mapper.Map<Character>(newCharacter);
-        newChara.Id = characters.Count + 1;
-        characters.Add(newChara);
-        serviceResponse.Data = _mapper.Map<List<ReadCharacterDto>>( characters);
+
+        _context.Characters.Add(newChara);
+        if(SaveChanges())
+            serviceResponse.Data = _mapper.Map<List<ReadCharacterDto>>( _context.Characters.ToList());
+        else{
+            serviceResponse.Data = null;
+            serviceResponse.Sucess = false;
+            serviceResponse.Message = "couldn't create character . . .";
+        }
+
 
         return serviceResponse;
     }
@@ -53,7 +63,7 @@ public class CharacterService : ICharacterService
     public async Task<ServiceResponse<ReadCharacterDto>> GetCharacterById(int id)
     {
         var serviceResponse = new ServiceResponse<ReadCharacterDto>();
-        var chara = characters.FirstOrDefault(x=>x.Id == id);
+        var chara = await _context.Characters.FirstOrDefaultAsync(x=>x.Id == id);
         if (chara != null)
             serviceResponse.Data =_mapper.Map<ReadCharacterDto>(chara) ;
         else{
@@ -69,18 +79,19 @@ public class CharacterService : ICharacterService
     public async Task<ServiceResponse<List<ReadCharacterDto>>> GetCharacters()
     {
         var serviceResponse = new ServiceResponse<List<ReadCharacterDto>>();
-        serviceResponse.Data = _mapper.Map<List<ReadCharacterDto>>(characters);
+        serviceResponse.Data = _mapper.Map<List<ReadCharacterDto>>(await _context.Characters.ToListAsync());
         return serviceResponse;
     }
 
     public async Task<ServiceResponse<ReadCharacterDto>> UpdateCharacter(int id, UpdateCharacterDto newCharacter)
     {
         var serviceResponse = new ServiceResponse<ReadCharacterDto>();
-        var chara = characters.FirstOrDefault(x=>x.Id == id);
+        var chara = await _context.Characters.FirstOrDefaultAsync(x=>x.Id == id);
         
         if(chara != null)
         {
             _mapper.Map(newCharacter, chara);
+            SaveChanges();
             serviceResponse.Data = _mapper.Map<ReadCharacterDto>(chara);
         }
          else{
@@ -96,10 +107,13 @@ public class CharacterService : ICharacterService
     public async Task<ServiceResponse<ReadCharacterDto>> DeleteCharacter(int id){
         var serviceResponse = new ServiceResponse<ReadCharacterDto>();
 
-        var chara2Delete = characters.FirstOrDefault(x=>x.Id == id);
+        var chara2Delete = await  _context.Characters.FirstOrDefaultAsync(x=>x.Id == id);
 
-        if( chara2Delete != null)
-            characters.Remove(chara2Delete);
+        if( chara2Delete != null){
+
+            _context.Characters.Remove(chara2Delete);
+            SaveChanges();
+        }
         else{
             serviceResponse.Data = null;
             serviceResponse.Sucess = false;
@@ -108,5 +122,8 @@ public class CharacterService : ICharacterService
 
         return serviceResponse;
     }
+
+ public bool SaveChanges() => (_context.SaveChanges() >= 0);
+
 
 }
