@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using rpg_trial.Dtos.Weapons;
 
 public class ReadCharacterDto
@@ -11,4 +12,5 @@ public class ReadCharacterDto
     public RpgClass Class { get; set; } = RpgClass.Knight;
 
     public ReadWeaponDto? Weapon { get; set; }
+    public List<ReadSkillDto>? Skills { get; set; }
 }

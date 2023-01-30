@@ -3,6 +3,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using rpg_trial.Dtos.Character;
+
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
@@ -42,4 +44,11 @@ public class CharacterController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult<ServiceResponse<ReadCharacterDto>>> Delete(int id)
         => Ok( await _charService.DeleteCharacter(id) );
+
+
+    [HttpPost("Skill")]
+    public async Task<ActionResult<ServiceResponse<ReadCharacterDto>>> AddCharacterSkill (CreateCharacterSkillDto characterSkill)
+    {
+        return Ok(await _charService.AddCharacterSkill(characterSkill));
+    }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using rpg_trial.Dtos.Character;
 
 public class CharacterService : ICharacterService
 {
@@ -46,6 +47,8 @@ public class CharacterService : ICharacterService
         var serviceResponse = new ServiceResponse<ReadCharacterDto>();
         var chara = await _context.Characters
             .Include(c=>c.User)
+            .Include(x=>x.Skills)
+            .Include(c=>c.Weapon)
             .FirstOrDefaultAsync(x=>x.Id == id && x.User!.Id == GetUserId() );
         if (chara != null)
             serviceResponse.Data =_mapper.Map<ReadCharacterDto>(chara) ;
@@ -63,7 +66,13 @@ public class CharacterService : ICharacterService
     {
         var userId = GetUserId();
         var serviceResponse = new ServiceResponse<List<ReadCharacterDto>>();
-        serviceResponse.Data = _mapper.Map<List<ReadCharacterDto>>(await _context.Characters.Where(u=> u.User!.Id == userId).ToListAsync());
+        serviceResponse.Data = _mapper.Map<List<ReadCharacterDto>>(
+            await _context.Characters
+            .Include(x=>x.Skills)
+            .Include(c=>c.Weapon)
+            .Where(u=> u.User!.Id == userId)
+            .ToListAsync()
+            );
         return serviceResponse;
     }
 
@@ -113,5 +122,43 @@ public class CharacterService : ICharacterService
 
  public bool SaveChanges() => (_context.SaveChanges() >= 0);
 
+ public async Task<ServiceResponse<ReadCharacterDto>> AddCharacterSkill(CreateCharacterSkillDto newCharacterSkill)
+    {
+        var response = new ServiceResponse<ReadCharacterDto>();
 
+        try
+        {
+            var chara = await _context.Characters
+                .Include(c=>c.Weapon)
+                .Include(c=>c.Skills)
+                .FirstOrDefaultAsync(x=>x.Id == newCharacterSkill.CharacterId  && x.User!.Id == GetUserId());
+
+            if(chara is null){
+                response.Sucess = false;
+                response.Message = "Character not found";
+                return response;
+            }
+
+            var skill = await _context.Skills.FirstOrDefaultAsync(s=>s.Id == newCharacterSkill.SkillId);
+            if (skill is null)
+            {
+                response.Sucess = false;
+                response.Message = "skill not found";
+                return response; 
+            }
+
+            chara.Skills!.Add(skill);
+            
+            await _context.SaveChangesAsync();
+            response.Data = _mapper.Map<ReadCharacterDto>(chara);
+
+        }
+        catch (System.Exception ex)
+        {
+            response.Sucess = false;
+            response.Message = ex.Message;
+        }
+
+        return response;
+    }
 }
