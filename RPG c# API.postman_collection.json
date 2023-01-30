@@ -1,0 +1,514 @@
+{
+	"info": {
+		"_postman_id": "0f7da8fe-0d0f-4b77-b3eb-adee449a6b00",
+		"name": "RPG c# API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7482820"
+	},
+	"item": [
+		{
+			"name": "Charachter CRUD",
+			"item": [
+				{
+					"name": "Get All Characters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/character",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"character"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Character by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/character/5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"character",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new Character",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Dante\",\r\n  \"hitPoints\": 100,\r\n  \"strength\": 20,\r\n  \"defense\": 16,\r\n  \"intelligence\": 10,\r\n  \"class\": \"Knight\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/character",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"character"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Character",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Maria\",\r\n    \"hitPoints\": 1000,\r\n    \"strength\": 10,\r\n    \"defense\": 10,\r\n    \"intelligence\": 10,\r\n    \"class\": \"Knight\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/character/5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"character",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Character by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/character/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"character",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Skill To Character",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"characterId\": 5,\r\n    \"skillId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/character/skill",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"character",
+								"skill"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{mariaToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"Canaan\",\r\n  \"password\": \"Canaan\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Canaan",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const user = pm.response.json();\r",
+									"\r",
+									"if (pm.test(\"Has properties\")) {\r",
+									"    pm.collectionVariables.set(\"canaanToken\", user.data);\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Global canaanToken has been set\", function() {\r",
+									"    var token = pm.collectionVariables.get(\"canaanToken\");\r",
+									"\r",
+									"    pm.expect(token).to.eql(user.data);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"Canaan\",\r\n  \"password\": \"Canaan\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Maria",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const user = pm.response.json();\r",
+									"\r",
+									"if (pm.test(\"Has properties\")) {\r",
+									"    pm.collectionVariables.set(\"mariaToken\", user.data);\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Global mariaToken has been set\", function() {\r",
+									"    var token = pm.collectionVariables.get(\"mariaToken\");\r",
+									"\r",
+									"    pm.expect(token).to.eql(user.data);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"Maria\",\r\n  \"password\": \"Maria\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Weapon",
+			"item": [
+				{
+					"name": "Create Weapon",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Rebellion\",\r\n    \"damage\": 100,\r\n    \"characterid\":7\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/weapon",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"weapon"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{mariaToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Fight",
+			"item": [
+				{
+					"name": "Fight with weapon",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"attackerId\": 5,\r\n  \"opponentId\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/fight/weaponFight",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"fight",
+								"weaponFight"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fight with Skill",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"attackerId\": 5,\r\n  \"opponentId\": 3,\r\n  \"skillId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/fight/Skillfight",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"fight",
+								"Skillfight"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fight w/ all characters",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"characterIds\": [\r\n    3,5,6,7\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/fight",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"fight"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Highscores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/fight",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"fight"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:5098",
+			"type": "string"
+		},
+		{
+			"key": "canaanToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "mariaToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
