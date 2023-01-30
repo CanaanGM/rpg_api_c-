@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using rpg_trial.Services.FightService;
 using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,9 +29,10 @@ builder.Services.AddSwaggerGen(c=>{
 
 builder.Services.AddHttpContextAccessor(); // to get the request content in the services
 
-builder.Services.AddTransient <ICharacterService, CharacterService>();
-builder.Services.AddTransient <IAuthRepo, AuthRepo>();
+builder.Services.AddTransient<ICharacterService, CharacterService>();
+builder.Services.AddTransient<IAuthRepo, AuthRepo>();
 builder.Services.AddTransient<IWeaponService, WeaponService>();
+builder.Services.AddTransient<IFightService, FightService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
