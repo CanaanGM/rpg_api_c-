@@ -11,9 +11,13 @@
 
 ### things that can be changed or implemented better
 1. id, a GUID instead of an INT
+1. auto migrations
+1. defining the relations in model creating not leaving it to the designer, tho it did a nice job creating them!
 2. bold of u to assume imma write them all !
 ### things i liked about it:
 1. it creates many to many relations now . kool 
 
 ### things i didn't like:
 1. u need to trust connection to a database, sure in a normal env but not while developing. . . 
+1. implicit imports are nonesense ; change a folder name and good luck finding the using
+1. using VSCode for dotnet is not as enjoyable of an experience as Visual Studio ; like why can't i pull up methods ??
