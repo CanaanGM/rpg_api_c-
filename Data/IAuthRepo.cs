@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 public interface IAuthRepo
 {
     Task<ServiceResponse<int>> Register(User user, string password);

@@ -1,3 +1,5 @@
+using System;
+
 namespace rpg_trial;
 
 public class WeatherForecast

@@ -1,5 +1,10 @@
+using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -22,8 +27,10 @@ builder.Services.AddSwaggerGen(c=>{
 });
 
 builder.Services.AddHttpContextAccessor(); // to get the request content in the services
+
 builder.Services.AddTransient <ICharacterService, CharacterService>();
 builder.Services.AddTransient <IAuthRepo, AuthRepo>();
+builder.Services.AddTransient<IWeaponService, WeaponService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

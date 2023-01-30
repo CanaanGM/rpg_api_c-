@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 public interface ICharacterService
 {
     Task<ServiceResponse<List<ReadCharacterDto>>> GetCharacters();
