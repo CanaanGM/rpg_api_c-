@@ -6,6 +6,7 @@
 2. run a docker postgres container
     1. `docker container run -p 5432:5432 -e POSTGRES_PASSWORD=DiLb984ImW --name testgres postgres:latest` 
     1. i dont care about the pass as i dont use it anywhere xD
+    1. docker-compose gave me problems so it was a no go . . .
 3. open it in ur IDE of choice. i'd recommend Visual Studio over VSCode for dotnet.
 
 
