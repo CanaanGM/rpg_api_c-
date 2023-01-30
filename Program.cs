@@ -21,6 +21,7 @@ builder.Services.AddSwaggerGen(c=>{
     c.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
+builder.Services.AddHttpContextAccessor(); // to get the request content in the services
 builder.Services.AddTransient <ICharacterService, CharacterService>();
 builder.Services.AddTransient <IAuthRepo, AuthRepo>();
 

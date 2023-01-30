@@ -1,46 +1,21 @@
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 public class CharacterService : ICharacterService
 {
-    public CharacterService(IMapper mapper, DataContext context)
+    public CharacterService(IMapper mapper, DataContext context, IHttpContextAccessor httpContextAccessor)
     {
         _mapper = mapper;
         _context = context;
+        _httpContextAccessor = httpContextAccessor;
     }
-     private static List<Character> characters =
-     new List<Character>()
-    {
-        new Character(){
-            Id=1,
-            Class=RpgClass.Knight, 
-            Defense=30,
-            HitPoints=500,
-            Intelligence=13,
-            Strength=21,
-            Name="Sam"
-        },
-        new Character(){
-            Id=2,
-            Class=RpgClass.Mage, 
-            Defense=30,
-            HitPoints=500,
-            Intelligence=23,
-            Strength=21,
-            Name="Gandalf"
-        },
-        new Character(){
-            Id=3,
-            Class=RpgClass.Cleric, 
-            Defense=30,
-            HitPoints=500,
-            Intelligence=23,
-            Strength=21,
-            Name="Arwin"
-        }
-        };
+
+    private int GetUserId () => int.Parse(_httpContextAccessor.HttpContext!.User
+        .FindFirstValue(ClaimTypes.NameIdentifier)!);
     private readonly IMapper _mapper;
     private readonly DataContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public async Task<ServiceResponse<List<ReadCharacterDto>>> CreateCharacter(CreateCharacterDto newCharacter)
     {   
@@ -76,8 +51,9 @@ public class CharacterService : ICharacterService
         return serviceResponse ;
     }
 
-    public async Task<ServiceResponse<List<ReadCharacterDto>>> GetCharacters(int userId)
+    public async Task<ServiceResponse<List<ReadCharacterDto>>> GetCharacters()
     {
+        var userId = GetUserId();
         var serviceResponse = new ServiceResponse<List<ReadCharacterDto>>();
         serviceResponse.Data = _mapper.Map<List<ReadCharacterDto>>(await _context.Characters.Where(u=> u!.Id == userId).ToListAsync());
         return serviceResponse;

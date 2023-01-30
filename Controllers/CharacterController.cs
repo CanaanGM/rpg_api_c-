@@ -17,8 +17,7 @@ public class CharacterController : ControllerBase
     
     public async Task<ActionResult<ServiceResponse<List<ReadCharacterDto>>>> GetAll ()
     {
-        int id = int.Parse(User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.NameIdentifier)!.Value);    
-        return Ok(await  _charService.GetCharacters(id));
+        return Ok(await  _charService.GetCharacters());
     }
 
     [HttpGet("{id}")]
