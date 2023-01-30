@@ -41,6 +41,7 @@ public class CharacterService : ICharacterService
     {
         var serviceResponse = new ServiceResponse<ReadCharacterDto>();
         var chara = await _context.Characters
+            .Include(c=>c.User)
             .FirstOrDefaultAsync(x=>x.Id == id && x.User!.Id == GetUserId() );
         if (chara != null)
             serviceResponse.Data =_mapper.Map<ReadCharacterDto>(chara) ;
@@ -88,7 +89,9 @@ public class CharacterService : ICharacterService
     public async Task<ServiceResponse<ReadCharacterDto>> DeleteCharacter(int id){
         var serviceResponse = new ServiceResponse<ReadCharacterDto>();
 
-        var chara2Delete = await  _context.Characters.FirstOrDefaultAsync(x=>x.Id == id  && x.User!.Id == GetUserId());
+        var chara2Delete = await  _context.Characters
+            .Include(c=>c.User)
+            .FirstOrDefaultAsync(x=>x.Id == id  && x.User!.Id == GetUserId());
 
         if( chara2Delete != null){
 
