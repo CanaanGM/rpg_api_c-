@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using rpg_trial.Models;
+
 public class Character{
     public int Id { get; set; }
     public string Name { get; set; } = "Frodo";
@@ -9,4 +12,6 @@ public class Character{
 
     public User? User { get; set; }
     public Weapon? Weapon {get; set;}
+
+    public List<Skill>? Skills { get; set; }
 }
