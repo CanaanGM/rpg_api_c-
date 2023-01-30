@@ -1,5 +1,7 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class CharacterController : ControllerBase 
@@ -13,9 +15,10 @@ public class CharacterController : ControllerBase
 
     [HttpGet(Name="GetAllCharacters")]
     
-    public async Task<ActionResult<ServiceResponse<List<ReadCharacterDto>>>> GetAll (){
-        
-        return Ok(await  _charService.GetCharacters());
+    public async Task<ActionResult<ServiceResponse<List<ReadCharacterDto>>>> GetAll ()
+    {
+        int id = int.Parse(User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.NameIdentifier)!.Value);    
+        return Ok(await  _charService.GetCharacters(id));
     }
 
     [HttpGet("{id}")]

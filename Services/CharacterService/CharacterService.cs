@@ -76,10 +76,10 @@ public class CharacterService : ICharacterService
         return serviceResponse ;
     }
 
-    public async Task<ServiceResponse<List<ReadCharacterDto>>> GetCharacters()
+    public async Task<ServiceResponse<List<ReadCharacterDto>>> GetCharacters(int userId)
     {
         var serviceResponse = new ServiceResponse<List<ReadCharacterDto>>();
-        serviceResponse.Data = _mapper.Map<List<ReadCharacterDto>>(await _context.Characters.ToListAsync());
+        serviceResponse.Data = _mapper.Map<List<ReadCharacterDto>>(await _context.Characters.Where(u=> u!.Id == userId).ToListAsync());
         return serviceResponse;
     }
 
