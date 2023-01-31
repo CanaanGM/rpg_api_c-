@@ -22,3 +22,11 @@
 1. u need to trust connection to a database, sure in a normal env but not while developing. . . 
 1. implicit imports are nonesense ; change a folder name and good luck finding the using
 1. using VSCode for dotnet is not as enjoyable of an experience as Visual Studio ; like why can't i pull up methods ??
+
+### Database structre:
+<div class="center"> 
+
+![Dbeaver](./Miscellaneous/DB-Diagram.png)
+
+![dbdigram.io](./Miscellaneous/BetterDb_diagram.png)
+</div>
